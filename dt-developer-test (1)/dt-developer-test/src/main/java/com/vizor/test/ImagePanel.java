@@ -2,6 +2,8 @@ package com.vizor.test;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class ImagePanel extends JPanel {
@@ -34,6 +36,14 @@ public class ImagePanel extends JPanel {
 
         for (int i = start; i < end; i++) {
             JLabel imageLabel = new JLabel(images.get(i));
+            int currentI = i;
+            imageLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    new ImageViewer(images.get(currentI));
+                }
+            });
+
             add(imageLabel);
         }
         revalidate();
