@@ -2,27 +2,45 @@ package com.vizor.test;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
+import java.util.List;
 
 public class ImagePanel extends JPanel {
-    private final int imageWidth;
-    private final int imageHeight;
+    private List<ImageIcon> images;
+    private int currentPage = 0;
+    private static final int IMAGES_PER_PAGE = 16;
 
-    public ImagePanel(int imageWidth, int imageHeight) {
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
-        setLayout(new GridLayout(0, 3)); // Устанавливаем сетку (3 колонки)
+    public ImagePanel(List<ImageIcon> images) {
+        this.images = images;
+        setLayout(new GridLayout(4, 4));
+        updateGallery();
     }
 
-    public void updateImages(ArrayList<ImageIcon> images) {
-        removeAll(); // Очищаем панель перед добавлением новых изображений
-        for (ImageIcon imageIcon : images) {
-            // Изменяем размер изображения
-            Image scaledImage = imageIcon.getImage().getScaledInstance(imageWidth, imageHeight, Image.SCALE_SMOOTH);
-            JLabel imageLabel = new JLabel(new ImageIcon(scaledImage));
-            add(imageLabel); // Добавляем изображение на панель
+    public void updateImages(List<ImageIcon> newImages) {
+        this.images = newImages;
+        currentPage = 0;
+        updateGallery();
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
+        updateGallery();
+    }
+
+    private void updateGallery() {
+        removeAll();
+
+        int start = currentPage * IMAGES_PER_PAGE;
+        int end = Math.min(start + IMAGES_PER_PAGE, images.size());
+
+        for (int i = start; i < end; i++) {
+            JLabel imageLabel = new JLabel(images.get(i));
+            add(imageLabel);
         }
-        revalidate(); // Обновляем панель
-        repaint(); // Перерисовываем панель
+        revalidate();
+        repaint();
+    }
+
+    public int getTotalPages() {
+        return (int) Math.ceil((double) images.size() / IMAGES_PER_PAGE);
     }
 }
